@@ -88,3 +88,8 @@ pom.xml.versionsBackup
 pom.xml.next
 release.properties
 
+
+
+#### PROJECT SPECIFICS #####
+
+perceptron.properties
