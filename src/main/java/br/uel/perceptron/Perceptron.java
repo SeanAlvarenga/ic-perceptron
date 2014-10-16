@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
@@ -58,12 +59,12 @@ public class Perceptron {
         }
     }
 
-    public void training() {
+    public void training(int limitEpochs) {
         int numEpochs = 0;
         boolean hasError = true;
-        double sum = 0;                // somatório (entrada * peso)
-        double y = 0;                // saída da perceptron
-        double[] matrixLine = null;
+        double sum;                // somatório (entrada * peso)
+        double y;                // saída da perceptron
+        double[] matrixLine;
 
         while (hasError) {
             numEpochs++;
@@ -77,7 +78,7 @@ public class Perceptron {
                     sum += weight[j] * matrixLine[j];
                 }
 
-                logger.info("\n*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***\n");
+                logger.info("*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***\n");
                 logger.info("Soma: " + sum);
                 sum -= threshold;
                 y = activation.function(sum, 0);
@@ -95,6 +96,7 @@ public class Perceptron {
                     }
                 }
             }
+            if(limitEpochs != -1 && numEpochs > limitEpochs) break;
         }
     }
 
@@ -115,6 +117,8 @@ public class Perceptron {
         for (int i = 0; i < weight.length; i++) {
             weight[i] = minWeight + (maxWeight - minWeight) * random.nextDouble();
         }
+
+        logger.warn(Arrays.toString(weight));
     }
 
     private void loadParameters() {
@@ -171,5 +175,9 @@ public class Perceptron {
 //		for (int j = 0; j < lines; j++) {
 //			System.out.print(classes[j] + " ");
 //		}
+    }
+
+    public void training() {
+        training(-1);
     }
 }

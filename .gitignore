@@ -93,3 +93,5 @@ release.properties
 #### PROJECT SPECIFICS #####
 
 perceptron.properties
+
+runlog-*.txt
