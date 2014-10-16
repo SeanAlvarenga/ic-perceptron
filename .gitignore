@@ -92,6 +92,6 @@ release.properties
 
 #### PROJECT SPECIFICS #####
 
-perceptron.properties
+src/main/resources/perceptron.properties
 
 runlog-*.txt

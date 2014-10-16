@@ -11,7 +11,7 @@
          named log file -->
     <file>runlog-${bySecond}.txt</file>
     <encoder>
-    <pattern># %msg%n</pattern>
+    <pattern>%-5level # %msg%n</pattern>
     </encoder>
   </appender>
 

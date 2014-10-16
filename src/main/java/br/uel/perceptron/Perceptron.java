@@ -1,6 +1,12 @@
 package br.uel.perceptron;
 
 import br.uel.functions.ActivationFunction;
+import br.uel.input.AbstractInputReader;
+import br.uel.input.Entry;
+import br.uel.module.AppModule;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +19,11 @@ import java.util.Scanner;
 public class Perceptron {
 
     private static final String INPUT_PATH = "src/main/resources/input/";
-    private static final String OUTPUT_PATH = "src/main/resources/output/";
 
     private ActivationFunction activation;
+
+    @Inject
+    private AbstractInputReader inputReader;
     private double[][] trainingSet;
     private double[] classes;
     private double[] weight;
@@ -30,6 +38,8 @@ public class Perceptron {
 
     public Perceptron(ActivationFunction activation) {
         this.activation = activation;
+        Injector injector = Guice.createInjector(new AppModule());
+        this.inputReader = injector.getInstance(AbstractInputReader.class);
     }
 
     public void readInput(String fileName) {
@@ -38,9 +48,8 @@ public class Perceptron {
         loadParameters();
         randomWeightInit();
 
-        File file = new File(INPUT_PATH + fileName);
 
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner(this.getClass().getResourceAsStream("/input/" + fileName))) {
             int count = 0;
 
             while (scanner.hasNextLine()) {
@@ -54,9 +63,8 @@ public class Perceptron {
                 classes[count] = Double.valueOf(values[values.length - 1]);
                 count++;
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
+        inputReader.setData(trainingSet);
     }
 
     public void training(int limitEpochs) {
@@ -70,8 +78,10 @@ public class Perceptron {
             numEpochs++;
             hasError = false;
 
-            for (int i = 0; i < lines; i++) {
-                matrixLine = trainingSet[i];
+            inputReader.reset();
+            int i = 0;
+            while (inputReader.nextTraining()) {
+                matrixLine = inputReader.getInputTraining().getData();
                 sum = 0;
 
                 for (int j = 0; j < (columns - 1); j++) {
@@ -92,24 +102,37 @@ public class Perceptron {
                     for (int j = 0; j < weight.length; j++) {
                         logger.info("Peso[" + j + "] = " + weight[j] + " + (" + learningRate + " * (" + classes[i] + " - " + y + ") * " + matrixLine[j] + ")");
                         weight[j] += (learningRate * (classes[i] - y) * matrixLine[j]);
-                        threshold += (learningRate * (classes[i] - y ) * matrixLine[j]);
+                        // Atualização de limiar
+                        threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
                         logger.info(" = " + weight[j]);
                     }
                 }
+                i++;
             }
-            if(limitEpochs != -1 && numEpochs > limitEpochs) break;
+            if (limitEpochs != -1 && numEpochs > limitEpochs) break;
         }
     }
 
-    public double evaluation(double[] data) {
-        assert data.length == weight.length : "Tamanho do vetor de dados incorreto.";
+    public double evaluation() {
 
         double sum = 0;
-
-        for (int i = 0; i < data.length; i++) {
-            sum += weight[i] * data[i];
+        int correct = 0, wrong = 0;
+        while (inputReader.nextValidation()) {
+            Entry entry = inputReader.getInputValidation();
+            for (int i = 0; i < entry.getData().length; i++) {
+                sum += weight[i] * entry.getData()[i];
+            }
+            double result = activation.function(sum, 0);
+            if (result == classes[entry.getPosition()]) {
+                correct++;
+            } else {
+                wrong++;
+            }
         }
-        return activation.function(sum, 0);
+
+        return (double)correct/(double)(correct+wrong);
+
+
     }
 
     private void randomWeightInit() {
@@ -127,7 +150,7 @@ public class Perceptron {
         classes = new double[lines];
         weight = new double[(columns - 1)];
 
-        try (FileInputStream stream = new FileInputStream("perceptron.properties")) {
+        try (InputStream stream = this.getClass().getResourceAsStream("/perceptron.properties")) {
             Properties properties = new Properties();
             properties.load(stream);
             threshold = Double.valueOf(properties.getProperty("threshold"));
@@ -136,7 +159,7 @@ public class Perceptron {
             maxWeight = Double.valueOf(properties.getProperty("maxWeight"));
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Erro ao carregar arquivo de Properties.");
+            logger.error("Erro ao carregar arquivo de Properties.");
         }
     }
 

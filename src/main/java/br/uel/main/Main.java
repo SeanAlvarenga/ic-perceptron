@@ -10,7 +10,8 @@ public class Main {
         ActivationFunction function = new BinaryStep();
         Perceptron p = new Perceptron(function);
         p.readInput("learning_set.csv");
-        p.training(10);
+        p.training(20000);
+        System.out.println("Rate: " + p.evaluation());
 //		p.print();
     }
 }
