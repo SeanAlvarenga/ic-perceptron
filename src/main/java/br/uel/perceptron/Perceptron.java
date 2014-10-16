@@ -77,8 +77,8 @@ public class Perceptron {
                 for (int j = 0; j < (columns - 1); j++) {
                     sum += weight[j] * matrixLine[j];
                 }
-
-                logger.info("*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***\n");
+                logger.info("");
+                logger.info("*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***");
                 logger.info("Soma: " + sum);
                 sum -= threshold;
                 y = activation.function(sum, 0);
@@ -92,6 +92,7 @@ public class Perceptron {
                     for (int j = 0; j < weight.length; j++) {
                         logger.info("Peso[" + j + "] = " + weight[j] + " + (" + learningRate + " * (" + classes[i] + " - " + y + ") * " + matrixLine[j] + ")");
                         weight[j] += (learningRate * (classes[i] - y) * matrixLine[j]);
+                        threshold += (learningRate * (classes[i] - y ) * matrixLine[j]);
                         logger.info(" = " + weight[j]);
                     }
                 }
