@@ -21,9 +21,6 @@ public class PercentageSplit extends AbstractInputReader {
     public PercentageSplit(double[][] data) {
         super(data);
 
-
-        currentEntryValidation = (int) Math.floor(validationSize * numberOfEntries);
-
         InputStream stream = this.getClass().getResourceAsStream("/validation.properties");
         Properties properties = new Properties();
         try {
@@ -33,6 +30,14 @@ public class PercentageSplit extends AbstractInputReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        currentEntryValidation = numberOfEntries - (int) Math.floor(validationSize * numberOfEntries);
+    }
+
+    @Override
+    public void setData(double[][] data) {
+        super.setData(data);
+        currentEntryValidation = numberOfEntries - (int) Math.floor(validationSize * numberOfEntries);
     }
 
     @Override
@@ -42,7 +47,8 @@ public class PercentageSplit extends AbstractInputReader {
 
     @Override
     public boolean nextValidation() {
-        return (currentEntryValidation <= Math.ceil(validationSize * numberOfEntries));
+        return  currentEntryValidation >= (numberOfEntries - Math.ceil(validationSize*numberOfEntries)) &&
+                currentEntryValidation < numberOfEntries;
     }
 
     @Override
@@ -57,7 +63,21 @@ public class PercentageSplit extends AbstractInputReader {
 
     public void reset() {
         currentEntryTraining = 0;
-        currentEntryValidation = (int) Math.floor(validationSize * numberOfEntries);
+        currentEntryValidation = numberOfEntries - (int) Math.floor(validationSize * numberOfEntries);
     }
+
+    @Override
+    public double getTrainingSize() {
+        return Math.ceil(numberOfEntries * validationSize);
+    }
+
+    public static int getCurrentEntryTraining() {
+        return currentEntryTraining;
+    }
+
+    public static int getCurrentEntryValidation() {
+        return currentEntryValidation;
+    }
+
 
 }

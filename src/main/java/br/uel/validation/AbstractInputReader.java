@@ -43,5 +43,5 @@ public abstract class AbstractInputReader {
     public abstract void reset();
 
 
-
+    public abstract double getTrainingSize();
 }

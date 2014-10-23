@@ -9,11 +9,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class HebbianLearning extends Learning<ActivationFunction> {
+public class HebbianLearning extends Learning {
 
     final Logger logger = LoggerFactory.getLogger(HebbianLearning.class);
 
     private long limitEpochs = -1;
+
+
+    public HebbianLearning(ActivationFunction function) {
+        super(function);
+    }
 
     @Override
     protected void readProperties() {
@@ -66,7 +71,7 @@ public class HebbianLearning extends Learning<ActivationFunction> {
                         logger.info("Peso[" + j + "] = " + weights[j] + " + (" + learningRate + " * (" + classes[i] + " - " + y + ") * " + matrixLine[j] + ")");
                         weights[j] += (learningRate * (classes[i] - y) * matrixLine[j]);
                         // Atualização de limiar
-                        threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
+ //                       threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
                         logger.info(" = " + weights[j]);
                     }
                 }

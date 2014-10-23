@@ -1,24 +1,24 @@
 package br.uel.learning;
 
+import br.uel.functions.ActivationFunction;
 import br.uel.validation.AbstractInputReader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public abstract class Learning<F> {
+public abstract class Learning {
 
-    protected F activationFunction;
+    protected ActivationFunction activationFunction;
 
     protected double threshold;
     protected double learningRate;
 
     public Learning() {
-        try {
-            this.activationFunction = (F) activationFunction.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    }
+
+    public Learning(ActivationFunction function) {
+        this.activationFunction = function;
     }
 
 

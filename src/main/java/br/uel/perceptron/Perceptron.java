@@ -8,19 +8,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Perceptron <V extends AbstractInputReader, L extends Learning, F extends ActivationFunction> {
+public class Perceptron {
 
     private static final String INPUT_PATH = "src/main/resources/input/";
 
     private ActivationFunction activation;
 
-    private V inputReader;
-    private Learning<F> learningMethod;
+    private AbstractInputReader inputReader;
+    private Learning learningMethod;
 
     private double[][] trainingSet;
     private double[] classes;
@@ -33,15 +34,14 @@ public class Perceptron <V extends AbstractInputReader, L extends Learning, F ex
     final Logger logger = LoggerFactory.getLogger(Perceptron.class);
 
     public Perceptron() {
+    }
 
-        Class<V> inputClass;
 
-        try {
-            this.inputReader = (V) inputReader.getClass().newInstance();
-            this.learningMethod = (L) learningMethod.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+
+    public Perceptron(AbstractInputReader validationType, Learning learningType, ActivationFunction function) {
+        this.learningMethod = learningType;
+        this.inputReader = validationType;
+        this.activation = function;
     }
 
     public void readInput(String fileName) {
@@ -88,6 +88,8 @@ public class Perceptron <V extends AbstractInputReader, L extends Learning, F ex
             } else {
                 wrong++;
             }
+            logger.debug("VALIDATION - Expected class:  " + classes[entry.getPosition()] + ";\t Given value:  " + result);
+            logger.debug("WEIGHTS:   " + Arrays.toString(this.weight));
         }
 
         return (double)correct/(double)(correct+wrong);
@@ -96,7 +98,7 @@ public class Perceptron <V extends AbstractInputReader, L extends Learning, F ex
     }
 
     private void randomWeightInit() {
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
 
         for (int i = 0; i < weight.length; i++) {
             weight[i] = minWeight + (maxWeight - minWeight) * random.nextDouble();
