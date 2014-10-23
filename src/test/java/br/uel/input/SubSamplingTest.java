@@ -1,4 +1,4 @@
-package br.uel.input;
+package br.uel.validation;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class SubSamplingTest {
 
-    private SubSampling method;
+    private PercentageSplit method;
 
     @Before
     public void setUp() throws Exception {
@@ -23,7 +23,7 @@ public class SubSamplingTest {
                 {1.0, 2.0, 3.0, 1.0},
                 {1.0, 2.0, 3.0, 1.0}
         };
-        method = new SubSampling(data);
+        method = new PercentageSplit(data);
     }
 
     @Test

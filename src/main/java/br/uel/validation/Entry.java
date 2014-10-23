@@ -1,8 +1,5 @@
-package br.uel.input;
+package br.uel.validation;
 
-/**
- * Created by pedro on 16/10/14.
- */
 public class Entry {
     private int position;
     private double[] data;

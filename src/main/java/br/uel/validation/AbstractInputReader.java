@@ -1,4 +1,4 @@
-package br.uel.input;
+package br.uel.validation;
 
 
 public abstract class AbstractInputReader {
@@ -25,6 +25,11 @@ public abstract class AbstractInputReader {
         this.numberOfEntries = data.length;
     }
 
+
+    public int getNumberOfColumns() {
+        if(data != null && data[0] != null) return data[0].length;
+        return -1;
+    }
 
 
     public abstract boolean nextTraining();

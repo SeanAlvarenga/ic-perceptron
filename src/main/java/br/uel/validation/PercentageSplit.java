@@ -1,11 +1,11 @@
-package br.uel.input;
+package br.uel.validation;
 
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class SubSampling extends AbstractInputReader {
+public class PercentageSplit extends AbstractInputReader {
 
     private double validationSize;
     private double trainingSize;
@@ -14,11 +14,11 @@ public class SubSampling extends AbstractInputReader {
     public static int currentEntryValidation;
 
 
-    public SubSampling() {
+    public PercentageSplit() {
         this(new double[0][0]);
     }
 
-    public SubSampling(double[][] data) {
+    public PercentageSplit(double[][] data) {
         super(data);
 
 

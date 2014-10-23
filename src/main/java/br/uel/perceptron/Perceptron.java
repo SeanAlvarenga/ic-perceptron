@@ -1,12 +1,9 @@
 package br.uel.perceptron;
 
 import br.uel.functions.ActivationFunction;
-import br.uel.input.AbstractInputReader;
-import br.uel.input.Entry;
-import br.uel.module.AppModule;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+import br.uel.validation.AbstractInputReader;
+import br.uel.validation.Entry;
+import br.uel.learning.Learning;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,19 +13,18 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Perceptron {
+public class Perceptron <V extends AbstractInputReader, L extends Learning, F extends ActivationFunction> {
 
     private static final String INPUT_PATH = "src/main/resources/input/";
 
     private ActivationFunction activation;
 
-    @Inject
-    private AbstractInputReader inputReader;
+    private V inputReader;
+    private Learning<F> learningMethod;
+
     private double[][] trainingSet;
     private double[] classes;
     private double[] weight;
-    private double threshold;        // theta ou limiar de ativação
-    private double learningRate;
     private double minWeight;
     private double maxWeight;
     private int lines;                // quantidade de linhas do arquivo
@@ -36,10 +32,16 @@ public class Perceptron {
 
     final Logger logger = LoggerFactory.getLogger(Perceptron.class);
 
-    public Perceptron(ActivationFunction activation) {
-        this.activation = activation;
-        Injector injector = Guice.createInjector(new AppModule());
-        this.inputReader = injector.getInstance(AbstractInputReader.class);
+    public Perceptron() {
+
+        Class<V> inputClass;
+
+        try {
+            this.inputReader = (V) inputReader.getClass().newInstance();
+            this.learningMethod = (L) learningMethod.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void readInput(String fileName) {
@@ -67,50 +69,8 @@ public class Perceptron {
         inputReader.setData(trainingSet);
     }
 
-    public void training(int limitEpochs) {
-        int numEpochs = 0;
-        boolean hasError = true;
-        double sum;                // somatório (entrada * peso)
-        double y;                // saída da perceptron
-        double[] matrixLine;
-
-        while (hasError) {
-            numEpochs++;
-            hasError = false;
-
-            inputReader.reset();
-            int i = 0;
-            while (inputReader.nextTraining()) {
-                matrixLine = inputReader.getInputTraining().getData();
-                sum = 0;
-
-                for (int j = 0; j < (columns - 1); j++) {
-                    sum += weight[j] * matrixLine[j];
-                }
-                logger.info("");
-                logger.info("*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***");
-                logger.info("Soma: " + sum);
-                sum -= threshold;
-                y = activation.function(sum, 0);
-
-                logger.info("saída encontrada: " + y + ". valor desejado: " + classes[i]);
-
-                if (y != classes[i]) {
-                    hasError = true;
-
-                    // atualização dos pesos
-                    for (int j = 0; j < weight.length; j++) {
-                        logger.info("Peso[" + j + "] = " + weight[j] + " + (" + learningRate + " * (" + classes[i] + " - " + y + ") * " + matrixLine[j] + ")");
-                        weight[j] += (learningRate * (classes[i] - y) * matrixLine[j]);
-                        // Atualização de limiar
-                        threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
-                        logger.info(" = " + weight[j]);
-                    }
-                }
-                i++;
-            }
-            if (limitEpochs != -1 && numEpochs > limitEpochs) break;
-        }
+    public void training() {
+        weight = learningMethod.learn(this.inputReader, weight, classes);
     }
 
     public double evaluation() {
@@ -153,8 +113,6 @@ public class Perceptron {
         try (InputStream stream = this.getClass().getResourceAsStream("/perceptron.properties")) {
             Properties properties = new Properties();
             properties.load(stream);
-            threshold = Double.valueOf(properties.getProperty("threshold"));
-            learningRate = Double.valueOf(properties.getProperty("learningRate"));
             minWeight = Double.valueOf(properties.getProperty("minWeight"));
             maxWeight = Double.valueOf(properties.getProperty("maxWeight"));
         } catch (IOException e) {
@@ -201,7 +159,4 @@ public class Perceptron {
 //		}
     }
 
-    public void training() {
-        training(-1);
-    }
 }
