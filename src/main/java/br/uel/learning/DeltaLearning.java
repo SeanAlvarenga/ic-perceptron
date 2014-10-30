@@ -16,7 +16,7 @@ import java.util.Properties;
 public class DeltaLearning extends Learning {
 
 
-    final Logger logger = LoggerFactory.getLogger(HebbianLearning.class);
+    final Logger logger = LoggerFactory.getLogger(DeltaLearning.class);
 
     private double errorThreshold;
 
