@@ -1,6 +1,7 @@
 package br.uel.learning;
 
 import br.uel.functions.ActivationFunction;
+import br.uel.utils.ChartCreator;
 import br.uel.validation.AbstractInputReader;
 
 import java.io.IOException;
@@ -10,8 +11,9 @@ import java.util.Properties;
 public abstract class Learning {
 
     protected ActivationFunction activationFunction;
-
-    protected double threshold;
+    protected ChartCreator plot = new ChartCreator("Erro vs Época");
+  
+	protected double threshold;
     protected double learningRate;
 
     public Learning() {
@@ -21,9 +23,7 @@ public abstract class Learning {
         this.activationFunction = function;
     }
 
-
     public abstract double[] learn(AbstractInputReader dataReader, double[] weights, double[] classes);
-
 
     protected void readProperties() {
         try (InputStream stream = this.getClass().getResourceAsStream("/perceptron.properties")) {
@@ -35,4 +35,12 @@ public abstract class Learning {
             e.printStackTrace();
         }
     }
+    
+    public ChartCreator getPlot() {
+		return plot;
+	}
+
+	public void setPlot(ChartCreator plot) {
+		this.plot = plot;
+	}
 }

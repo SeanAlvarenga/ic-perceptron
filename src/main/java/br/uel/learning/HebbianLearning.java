@@ -36,7 +36,7 @@ public class HebbianLearning extends Learning {
     @Override
     public double[] learn(AbstractInputReader dataReader, double[] weights, double[] classes) {
         readProperties();
-        int numEpochs = 0;
+        int numEpochs = 0, errorCount = 0;
         boolean hasError = true;
         double sum;                // somatório (entrada * peso)
         double y;                // saída da perceptron
@@ -44,10 +44,12 @@ public class HebbianLearning extends Learning {
 
         while (hasError) {
             numEpochs++;
+            errorCount = 0;
             hasError = false;
 
             dataReader.reset();
             int i = 0;
+            
             while (dataReader.nextTraining()) {
                 matrixLine = dataReader.getInputTraining().getData();
                 sum = 0;
@@ -55,6 +57,7 @@ public class HebbianLearning extends Learning {
                 for (int j = 0; j < (dataReader.getNumberOfColumns() - 1); j++) {
                     sum += weights[j] * matrixLine[j];
                 }
+                
                 logger.info("");
                 logger.info("*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***");
                 logger.info("Soma: " + sum);
@@ -62,9 +65,10 @@ public class HebbianLearning extends Learning {
                 y = activationFunction.function(sum, 0);
 
                 logger.info("saída encontrada: " + y + ". valor desejado: " + classes[i]);
-
+                
                 if (y != classes[i]) {
                     hasError = true;
+                    errorCount++;
 
                     // atualização dos pesos
                     for (int j = 0; j < weights.length; j++) {
@@ -77,6 +81,8 @@ public class HebbianLearning extends Learning {
                 }
                 i++;
             }
+            
+            this.plot.addValue(numEpochs, errorCount);
             if (limitEpochs != -1 && numEpochs > limitEpochs) break;
         }
 

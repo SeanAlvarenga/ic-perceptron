@@ -1,9 +1,11 @@
 package br.uel.perceptron;
 
 import br.uel.functions.ActivationFunction;
+import br.uel.utils.ChartCreator;
 import br.uel.validation.AbstractInputReader;
 import br.uel.validation.Entry;
 import br.uel.learning.Learning;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +37,6 @@ public class Perceptron {
 
     public Perceptron() {
     }
-
-
 
     public Perceptron(AbstractInputReader validationType, Learning learningType, ActivationFunction function) {
         this.learningMethod = learningType;
@@ -77,17 +77,22 @@ public class Perceptron {
 
         double sum = 0;
         int correct = 0, wrong = 0;
+        
         while (inputReader.nextValidation()) {
             Entry entry = inputReader.getInputValidation();
+            
             for (int i = 0; i < entry.getData().length; i++) {
                 sum += weight[i] * entry.getData()[i];
             }
+            
             double result = activation.function(sum, 0);
+            
             if (result == classes[entry.getPosition()]) {
                 correct++;
             } else {
                 wrong++;
             }
+            
             logger.debug("VALIDATION - Expected class:  " + classes[entry.getPosition()] + ";\t Given value:  " + result);
             logger.debug("WEIGHTS:   " + Arrays.toString(this.weight));
         }
@@ -148,17 +153,8 @@ public class Perceptron {
         }
     }
 
-    public void print() {
-        for (int i = 0; i < lines; i++) {
-            System.out.println();
-            for (int j = 0; j < (columns - 1); j++) {
-                System.out.print(trainingSet[i][j] + " ");
-            }
-        }
-
-//		for (int j = 0; j < lines; j++) {
-//			System.out.print(classes[j] + " ");
-//		}
+    public void createLineChart() {
+    	this.learningMethod.getPlot().createLineChart(
+    			"Erro vs Época", "Época", "Erro Acumulado");
     }
-
 }
