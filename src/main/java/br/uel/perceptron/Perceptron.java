@@ -79,7 +79,9 @@ public class Perceptron {
                 count++;
             }
         }
+        System.out.println("LINE: " + lines);
         inputReader.setData(trainingSet);
+        System.out.println("Training size: " + inputReader.getTrainingSize());
     }
 
     private void instantiateInputs() {
