@@ -16,7 +16,7 @@ import java.util.Properties;
 public class DeltaLearning extends Learning {
 
 
-    final Logger logger = LoggerFactory.getLogger(HebbianLearning.class);
+    final Logger logger = LoggerFactory.getLogger(DeltaLearning.class);
 
     private double errorThreshold;
 
@@ -103,8 +103,13 @@ public class DeltaLearning extends Learning {
                 
                 i++;
                 curError = meanLeastSquareError(dataReader, weights, classes);
+                System.out.println("CURERROR:" + curError);
             } // while hasInputs
-            
+
+            System.out.println("Add value");
+            plot.addValue(numEpochs, curError);
+
+
             logger.info("ERROR: " + error + "    CURERROR:  " + curError + "  DELTA: " + Math.abs(error - curError));
         }
         return weights;

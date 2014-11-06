@@ -67,4 +67,8 @@ public class ChartCreator {
     public void addValue(int x, double y) {
     	this.dataSet.add(x, y);
     }
+
+    public int getDatasetSize() {
+        return dataSet.getItemCount();
+    }
 }

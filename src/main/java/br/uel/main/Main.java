@@ -2,7 +2,6 @@ package br.uel.main;
 
 import br.uel.module.AppModule;
 import br.uel.perceptron.Perceptron;
-
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -17,8 +16,8 @@ public class Main {
     public Main() {
         Injector injector = Guice.createInjector(new AppModule());
         perceptron = injector.getInstance(Perceptron.class);
-        perceptron.readInput("learning_set.csv");
-        perceptron.training();
+        perceptron.readInput("");
+        perceptron.learning();
         System.out.println("Rate: " + perceptron.evaluation());
         perceptron.createLineChart();
     }
