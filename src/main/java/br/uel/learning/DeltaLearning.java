@@ -16,7 +16,7 @@ import java.util.Properties;
 public class DeltaLearning extends Learning {
 
 
-    final Logger logger = LoggerFactory.getLogger(HebbianLearning.class);
+    final Logger logger = LoggerFactory.getLogger(DeltaLearning.class);
 
     private double errorThreshold;
 
@@ -38,8 +38,6 @@ public class DeltaLearning extends Learning {
     }
 
     public double meanLeastSquareError(AbstractInputReader dataReader, double[] weights, double[] classes) {
-
-
         dataReader.reset();
         double mle = 0L;
         double sum;
@@ -65,10 +63,8 @@ public class DeltaLearning extends Learning {
 
     @Override
     public double[] learn(AbstractInputReader dataReader, double[] weights, double[] classes) {
-
-
         readProperties();
-        int numEpochs = 0;
+        int numEpochs = 0, errorCount;
         double error = 10e12;
         double curError = 0;
         double sum;                // somatório (entrada * peso)
@@ -77,9 +73,11 @@ public class DeltaLearning extends Learning {
         while (Math.abs(curError - error) > errorThreshold) {
             error = meanLeastSquareError(dataReader, weights, classes);
             numEpochs++;
+            errorCount = 0;
 
             dataReader.reset();
             int i = 0;
+            
             while (dataReader.nextTraining()) {
                 matrixLine = dataReader.getInputTraining().getData();
                 sum = 0;
@@ -95,7 +93,6 @@ public class DeltaLearning extends Learning {
 
                 logger.info("saída encontrada: " + sum + ". valor desejado: " + classes[i]);
 
-
                 // atualização dos pesos
                 for (int j = 0; j < weights.length; j++) {
                     weights[j] += (learningRate * (classes[i] - sum) * matrixLine[j]);
@@ -103,14 +100,18 @@ public class DeltaLearning extends Learning {
                     //                       threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
                     logger.info(" = " + weights[j]);
                 }
+                
                 i++;
                 curError = meanLeastSquareError(dataReader, weights, classes);
+                System.out.println("CURERROR:" + curError);
             } // while hasInputs
+
+            System.out.println("Add value");
+            plot.addValue(numEpochs, curError);
+
+
             logger.info("ERROR: " + error + "    CURERROR:  " + curError + "  DELTA: " + Math.abs(error - curError));
         }
-
         return weights;
-
-
     }
 }

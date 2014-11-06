@@ -20,8 +20,6 @@ public class ChartCreator {
 
     private XYSeries dataSet;
 
-
-
     public ChartCreator(String dataSetTitle){
         this.dataSet = new XYSeries(dataSetTitle);
     }
@@ -49,13 +47,11 @@ public class ChartCreator {
         return 0;
     }
 
-
     public void addValuesIntercalated(double[] values) {
         for (int i = 0; i < values.length; i+=2) {
             this.dataSet.add(i, values[i]);
         }
     }
-
 
     public void addValues(double[] values) {
         int cont=0;
@@ -64,7 +60,15 @@ public class ChartCreator {
         }
     }
 
-    public void addValue(int y, int x) {
+    public void addValue(int x, int y) {
         this.dataSet.add(x, y);
+    }
+    
+    public void addValue(int x, double y) {
+    	this.dataSet.add(x, y);
+    }
+
+    public int getDatasetSize() {
+        return dataSet.getItemCount();
     }
 }

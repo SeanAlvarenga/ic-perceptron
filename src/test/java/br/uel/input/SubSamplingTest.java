@@ -1,12 +1,13 @@
-package br.uel.validation;
+package br.uel.input;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import static org.hamcrest.CoreMatchers.is;
+import br.uel.validation.PercentageSplit;
 
 public class SubSamplingTest {
 
