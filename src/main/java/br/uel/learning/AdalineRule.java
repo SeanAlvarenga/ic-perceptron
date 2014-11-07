@@ -11,17 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Created by pedro on 23/10/14.
- */
-public class DeltaLearning extends Learning {
+public class AdalineRule extends Learning {
 
 
-    final Logger logger = LoggerFactory.getLogger(DeltaLearning.class);
+    final Logger logger = LoggerFactory.getLogger(AdalineRule.class);
 
     private double errorThreshold;
 
-    public DeltaLearning(ActivationFunction function) {
+    public AdalineRule(ActivationFunction function) {
         super(function);
     }
 
@@ -114,7 +111,6 @@ public class DeltaLearning extends Learning {
             if (curError != Double.POSITIVE_INFINITY) plot.addValue(numEpochs * i, curError);
             reader = null;
 
-            logger.info("ERROR: " + error + "    CURERROR:  " + curError + "  DELTA: " + Math.abs(error - curError) + " EPO: " + numEpochs);
         }
         return weights;
     }

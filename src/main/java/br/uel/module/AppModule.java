@@ -1,9 +1,7 @@
 package br.uel.module;
 
 import br.uel.functions.BinaryStep;
-import br.uel.functions.Sigmoid;
-import br.uel.learning.DeltaLearning;
-import br.uel.learning.HebbianLearning;
+import br.uel.learning.AdalineRule;
 import br.uel.perceptron.Perceptron;
 import br.uel.validation.PercentageSplit;
 
@@ -24,7 +22,7 @@ public class AppModule extends AbstractModule {
         PercentageSplit validation = new PercentageSplit();
 //        HebbianLearning learning = new HebbianLearning(function);
 //
-        DeltaLearning learning = new DeltaLearning(function);
+        AdalineRule learning = new AdalineRule(function);
 
         return  new Perceptron(validation, learning, function);
     }
