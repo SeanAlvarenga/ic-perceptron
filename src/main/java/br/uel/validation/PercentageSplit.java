@@ -42,6 +42,8 @@ public class PercentageSplit extends AbstractInputReader {
 
     @Override
     public boolean nextTraining() {
+        System.out.println("trainingSize = " + trainingSize*numberOfEntries);
+        System.out.println("currentEntryTraining = " + currentEntryTraining);
         return (currentEntryTraining <= Math.ceil(trainingSize * numberOfEntries));
     }
 
@@ -67,8 +69,13 @@ public class PercentageSplit extends AbstractInputReader {
     }
 
     @Override
+    public AbstractInputReader clone() {
+        return new PercentageSplit(this.data);
+    }
+
+    @Override
     public double getTrainingSize() {
-        return Math.ceil(numberOfEntries * validationSize);
+        return Math.ceil(numberOfEntries * trainingSize);
     }
 
     public static int getCurrentEntryTraining() {

@@ -3,14 +3,10 @@ package br.uel.main;
 import br.uel.module.AppModule;
 import br.uel.perceptron.Perceptron;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.name.Named;
 
 public class Main {
 
-    @Inject
-    @Named("HebbianBinary")
     private Perceptron perceptron;
 
     public Main() {

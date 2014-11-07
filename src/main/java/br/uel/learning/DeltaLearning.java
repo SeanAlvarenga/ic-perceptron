@@ -3,6 +3,7 @@ package br.uel.learning;
 import br.uel.functions.ActivationFunction;
 import br.uel.validation.AbstractInputReader;
 import br.uel.validation.Entry;
+import br.uel.validation.PercentageSplit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,14 +71,15 @@ public class DeltaLearning extends Learning {
         double[] matrixLine;
 
         while (Math.abs(curError - error) > errorThreshold) {
+
             error = meanLeastSquareError(dataReader, weights, classes);
             numEpochs++;
-            errorCount = 0;
 
             dataReader.reset();
             int i = 0;
             
             while (dataReader.nextTraining()) {
+                System.out.println("INPUT");
                 matrixLine = dataReader.getInputTraining().getData();
                 sum = 0;
 
@@ -99,15 +101,24 @@ public class DeltaLearning extends Learning {
                     //                       threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
                     logger.info(" = " + weights[j]);
                 }
-                
                 i++;
-                curError = meanLeastSquareError(dataReader, weights, classes);
+
+
+//                AbstractInputReader aureadaer = dataReader.clone();
+                PercentageSplit aureadaer = new PercentageSplit();
+                aureadaer.setData(dataReader.getData());
+                curError = meanLeastSquareError(aureadaer, weights, classes);
+                aureadaer = null;
+                System.out.println("Nextrain: "+dataReader.nextTraining());
+
                 System.out.println("CURERROR:" + curError);
+                System.out.println("ERROR:  " + error);
             } // while hasInputs
 
             System.out.println("Add value");
             plot.addValue(numEpochs, curError);
 
+            System.out.println("DIFFERROR: " + Math.abs(curError - error));
 
             logger.info("ERROR: " + error + "    CURERROR:  " + curError + "  DELTA: " + Math.abs(error - curError));
         }
