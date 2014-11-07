@@ -2,6 +2,7 @@ package br.uel.module;
 
 import br.uel.functions.BinaryStep;
 import br.uel.learning.AdalineRule;
+import br.uel.learning.HebbianLearning;
 import br.uel.perceptron.Perceptron;
 import br.uel.validation.PercentageSplit;
 
