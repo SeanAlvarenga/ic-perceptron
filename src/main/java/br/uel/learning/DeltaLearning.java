@@ -40,7 +40,7 @@ public class DeltaLearning extends Learning {
 
     public double meanLeastSquareError(AbstractInputReader dataReader, double[] weights, double[] classes) {
         dataReader.reset();
-        double mle = 0L;
+        double mle = 0.0;
         double sum;
 
         double[] matrixLine;
@@ -53,9 +53,9 @@ public class DeltaLearning extends Learning {
                 sum += weights[j] * matrixLine[j];
             }
 
-
-            mle += Math.pow((classes[entry.getPosition()] - sum), 2.0);
-
+            final double delta = (classes[entry.getPosition()] - sum);
+            mle += delta * delta;
+//            mle += Math.abs(classes[entry.getPosition()] - sum);
 
 
         }
@@ -75,11 +75,12 @@ public class DeltaLearning extends Learning {
         while (Math.abs(curError - error) > errorThreshold) {
 
             error = meanLeastSquareError(dataReader, weights, classes);
+            if(curError > error) break;
             numEpochs++;
 
             dataReader.reset();
             int i = 0;
-            
+
             while (dataReader.nextTraining()) {
                 matrixLine = dataReader.getInputTraining().getData();
                 sum = 0;
@@ -106,15 +107,14 @@ public class DeltaLearning extends Learning {
                     logger.info("= " + weights[j]);
                 }
                 i++;
-
-                AbstractInputReader reader = new PercentageSplit(dataReader.getData());
-                curError = meanLeastSquareError(reader, weights, classes);
-                plot.addValue(numEpochs*i, curError);
-                System.out.println(curError);
-                reader = null;
             } // while hasInputs
 
-            logger.info("ERROR: " + error + "    CURERROR:  " + curError + "  DELTA: " + Math.abs(error - curError));
+            AbstractInputReader reader = new PercentageSplit(dataReader.getData());
+            curError = meanLeastSquareError(reader, weights, classes);
+            if (curError != Double.POSITIVE_INFINITY) plot.addValue(numEpochs * i, curError);
+            reader = null;
+
+            logger.info("ERROR: " + error + "    CURERROR:  " + curError + "  DELTA: " + Math.abs(error - curError) + " EPO: " + numEpochs);
         }
         return weights;
     }

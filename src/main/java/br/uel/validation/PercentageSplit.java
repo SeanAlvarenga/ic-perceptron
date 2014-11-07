@@ -21,15 +21,16 @@ public class PercentageSplit extends AbstractInputReader {
     public PercentageSplit(double[][] data) {
         super(data);
 
-        InputStream stream = this.getClass().getResourceAsStream("/validation.properties");
+
         Properties properties = new Properties();
-        try {
+        try (InputStream stream = this.getClass().getResourceAsStream("/validation.properties")){
             properties.load(stream);
             this.validationSize = Double.parseDouble(properties.getProperty("validation_size"));
             this.trainingSize = Double.parseDouble(properties.getProperty("training_size"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         currentEntryValidation = numberOfEntries - (int) Math.floor(validationSize * numberOfEntries);
     }

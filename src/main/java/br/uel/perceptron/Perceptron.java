@@ -111,15 +111,16 @@ public class Perceptron {
                 sum += weight[i] * entry.getData()[i];
             }
 
-            double result = activation.function(sum);
+//            double result = activation.function(sum);
             
-            if (result == classes[entry.getPosition()]) {
+//            if (result == classes[entry.getPosition()]) {
+            if (Math.abs(sum - classes[entry.getPosition()]) < 0.1) {
                 correct++;
             } else {
                 wrong++;
             }
             
-            logger.debug("VALIDATION - Expected class:  " + classes[entry.getPosition()] + ";\t Given value:  " + result);
+            logger.debug("VALIDATION - Expected class:  " + classes[entry.getPosition()] + ";\t Given value:  " + sum);
             logger.debug("WEIGHTS:   " + Arrays.toString(this.weight));
         }
 
