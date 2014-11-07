@@ -16,9 +16,9 @@ public class Main {
     public Main() {
         Injector injector = Guice.createInjector(new AppModule());
         perceptron = injector.getInstance(Perceptron.class);
-        perceptron.readInput("");
+        perceptron.readInput("dataset_2014-10-30.csv");
         perceptron.learning();
-        System.out.println("Rate: " + perceptron.evaluation());
+//        System.out.println("Rate: " + perceptron.evaluation());
         perceptron.createLineChart();
     }
 

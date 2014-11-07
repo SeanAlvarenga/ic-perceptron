@@ -41,7 +41,7 @@ public class ChartCreator {
     public int createLineChart(String chartTitle, String xTitle, String yTitle) {
         XYDataset sc = new XYSeriesCollection(this.dataSet);
         JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, xTitle, yTitle, sc, PlotOrientation.VERTICAL, true, true, false);
-        ChartFrame frame1=new ChartFrame("Wave Format",chart);
+        ChartFrame frame1 = new ChartFrame("Perceptron",chart);
         frame1.setVisible(true);
         frame1.setSize(1300, 250);
         return 0;

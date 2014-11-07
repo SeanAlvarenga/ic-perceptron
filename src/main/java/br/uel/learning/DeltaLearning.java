@@ -44,7 +44,6 @@ public class DeltaLearning extends Learning {
 
         double[] matrixLine;
 
-
         while (dataReader.nextTraining()) {
             Entry entry = dataReader.getInputTraining();
             matrixLine = entry.getData();

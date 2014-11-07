@@ -78,6 +78,4 @@ public class PercentageSplit extends AbstractInputReader {
     public static int getCurrentEntryValidation() {
         return currentEntryValidation;
     }
-
-
 }

@@ -14,8 +14,7 @@ public class HebbianLearning extends Learning {
     final Logger logger = LoggerFactory.getLogger(HebbianLearning.class);
 
     private long limitEpochs = -1;
-
-
+    
     public HebbianLearning(ActivationFunction function) {
         super(function);
     }
@@ -23,6 +22,7 @@ public class HebbianLearning extends Learning {
     @Override
     protected void readProperties() {
         super.readProperties();
+        
         try (InputStream stream = this.getClass().getResourceAsStream("/hebb.properties")) {
             Properties properties = new Properties();
             properties.load(stream);
@@ -30,7 +30,6 @@ public class HebbianLearning extends Learning {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -53,36 +52,43 @@ public class HebbianLearning extends Learning {
             while (dataReader.nextTraining()) {
                 matrixLine = dataReader.getInputTraining().getData();
                 sum = 0;
-
-                for (int j = 0; j < (dataReader.getNumberOfColumns() - 1); j++) {
-                    sum += weights[j] * matrixLine[j];
-                }
                 
                 logger.info("");
                 logger.info("*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***");
-                logger.info("Soma: " + sum);
+                
+                for (int j = 0; j < dataReader.getNumberOfColumns(); j++) {
+                	logger.info("Soma = " + sum + " + (" + weights[j] + " * " + matrixLine[j] + ")");
+                	sum += weights[j] * matrixLine[j];
+                	logger.info("     = " + sum);
+                }
+                
                 sum -= threshold;
-                y = activationFunction.function(sum, 0);
+                logger.info("Soma - threshold: " + sum);
+                
+                y = activationFunction.function(sum);
 
-                logger.info("saída encontrada: " + y + ". valor desejado: " + classes[i]);
+                logger.info("Saída encontrada: " + y + ". Valor desejado: " + classes[i]);
                 
                 if (y != classes[i]) {
                     hasError = true;
                     errorCount++;
-
+                    
+                    logger.info("Atualizando pesos...");
                     // atualização dos pesos
                     for (int j = 0; j < weights.length; j++) {
                         logger.info("Peso[" + j + "] = " + weights[j] + " + (" + learningRate + " * (" + classes[i] + " - " + y + ") * " + matrixLine[j] + ")");
                         weights[j] += (learningRate * (classes[i] - y) * matrixLine[j]);
                         // Atualização de limiar
  //                       threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
-                        logger.info(" = " + weights[j]);
+                        logger.info("        = " + weights[j]);
                     }
                 }
                 i++;
             }
             
+            logger.info("Erros acumulados: " + errorCount);
             this.plot.addValue(numEpochs, errorCount);
+            
             if (limitEpochs != -1 && numEpochs > limitEpochs) break;
         }
 

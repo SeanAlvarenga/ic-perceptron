@@ -1,29 +1,29 @@
 package br.uel.perceptron;
 
-import br.uel.functions.ActivationFunction;
-import br.uel.utils.ChartCreator;
-import br.uel.validation.AbstractInputReader;
-import br.uel.validation.Entry;
-import br.uel.learning.Learning;
-import br.uel.learning.HebbianLearning;
-import br.uel.learning.Learning;
-import br.uel.validation.AbstractInputReader;
-import br.uel.validation.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.LineNumberReader;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import br.uel.functions.ActivationFunction;
+import br.uel.learning.Learning;
+import br.uel.validation.AbstractInputReader;
+import br.uel.validation.Entry;
 
 public class Perceptron {
 
     private static final String INPUT_PATH = "src/main/resources/input/";
 
     private ActivationFunction activation;
-
     private AbstractInputReader inputReader;
     private Learning learningMethod;
 
@@ -33,14 +33,14 @@ public class Perceptron {
     private double minWeight;
     private double maxWeight;
     private int lines;                // quantidade de linhas do arquivo
-    private int columns;            // quantidade de colunas do arquivo
+    private int columns;              // quantidade de colunas do arquivo
     private double bias;
 
     final Logger logger = LoggerFactory.getLogger(Perceptron.class);
-    private boolean enableBias;
+    private boolean enableBias = false;
     private String separator;
 
-    public Perceptron() {
+    public Perceptron() { 
     }
 
     public Perceptron(AbstractInputReader validationType, Learning learningType, ActivationFunction function) {
@@ -53,11 +53,9 @@ public class Perceptron {
         loadParameters();
         lines = countFileLines(fileName);
         columns = countFileColumns(fileName);
-
+        
         instantiateInputs();
-
         randomWeightInit();
-
 
         try (Scanner scanner = new Scanner(this.getClass().getResourceAsStream("/input/" + fileName))) {
             int count = 0;
@@ -67,34 +65,32 @@ public class Perceptron {
                 String[] values = line.split(separator);
 
                 int length = values.length;
+                
                 for (int i = 0; i < length - 1; i++) {
-
                     trainingSet[count][i] = Double.valueOf(values[i]);
                 }
 
                 classes[count] = Double.valueOf(values[length - 1]);
 
                 // Introducing bias in training set
-                if (enableBias) trainingSet[count][values.length-1] = bias;
+                if (enableBias) trainingSet[count][(values.length - 1)] = bias;
                 count++;
             }
         }
+        
         inputReader.setData(trainingSet);
     }
 
     private void instantiateInputs() {
         if (enableBias) {
             trainingSet = new double[lines][columns];
+            weight = new double[columns];
         } else {
             trainingSet = new double[lines][(columns - 1)];
+            weight = new double[(columns - 1)];
         }
 
         classes = new double[lines];
-        if (enableBias) {
-            weight = new double[columns];
-        } else {
-            weight = new double[(columns - 1)];
-        }
     }
 
     public void learning() {
@@ -113,9 +109,8 @@ public class Perceptron {
                 sum += weight[i] * entry.getData()[i];
             }
 
-            double result = activation.function(sum, 0);
+            double result = activation.function(sum);
             
-
             if (result == classes[entry.getPosition()]) {
                 correct++;
             } else {
@@ -137,13 +132,11 @@ public class Perceptron {
         for (int i = 0; i < weight.length; i++) {
             weight[i] = minWeight + (maxWeight - minWeight) * random.nextDouble();
         }
-
-        logger.warn(Arrays.toString(weight));
+        
+        logger.info("Pesos aleatórios gerados: " + Arrays.toString(weight));
     }
 
     private void loadParameters() {
-
-        enableBias = false;
         try (InputStream stream = this.getClass().getResourceAsStream("/perceptron.properties")) {
             Properties properties = new Properties();
             properties.load(stream);
@@ -151,15 +144,14 @@ public class Perceptron {
             maxWeight = Double.parseDouble(properties.getProperty("maxWeight"));
             enableBias = properties.getProperty("enableBias").equals("1");
             separator = properties.getProperty("separator");
-            if(enableBias) {
+            
+            if (enableBias) {
                 bias = Double.parseDouble(properties.getProperty("bias"));
             }
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("Erro ao carregar arquivo de Properties.");
         }
-
-
     }
 
     public int countFileLines(String fileName) {
@@ -188,8 +180,6 @@ public class Perceptron {
     }
 
     public void createLineChart() {
-        System.out.println(this.learningMethod.getPlot().getDatasetSize());
-    	this.learningMethod.getPlot().createLineChart(
-                "Erro vs Época", "Época", "Erro Acumulado");
+    	this.learningMethod.getPlot().createLineChart("Erro vs Época", "Época", "Erro Acumulado");
     }
 }

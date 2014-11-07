@@ -11,7 +11,7 @@ import java.util.Properties;
 public abstract class Learning {
 
     protected ActivationFunction activationFunction;
-    protected ChartCreator plot = new ChartCreator("Erro vs Época");
+    protected ChartCreator plot = new ChartCreator("Taxa de erro");
   
 	protected double threshold;
     protected double learningRate;
@@ -38,9 +38,5 @@ public abstract class Learning {
     
     public ChartCreator getPlot() {
 		return plot;
-	}
-
-	public void setPlot(ChartCreator plot) {
-		this.plot = plot;
 	}
 }
