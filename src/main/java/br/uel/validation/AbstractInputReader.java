@@ -33,6 +33,5 @@ public abstract class AbstractInputReader {
     public abstract Entry getInputTraining();
     public abstract Entry getInputValidation();
     public abstract void reset();
-    public abstract AbstractInputReader clone();
     public abstract double getTrainingSize();
 }

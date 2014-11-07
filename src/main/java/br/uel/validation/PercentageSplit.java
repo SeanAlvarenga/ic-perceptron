@@ -10,8 +10,8 @@ public class PercentageSplit extends AbstractInputReader {
     private double validationSize;
     private double trainingSize;
 
-    public static int currentEntryTraining = 0;
-    public static int currentEntryValidation;
+    public int currentEntryTraining = 0;
+    public int currentEntryValidation;
 
 
     public PercentageSplit() {
@@ -42,8 +42,6 @@ public class PercentageSplit extends AbstractInputReader {
 
     @Override
     public boolean nextTraining() {
-        System.out.println("trainingSize = " + trainingSize*numberOfEntries);
-        System.out.println("currentEntryTraining = " + currentEntryTraining);
         return (currentEntryTraining <= Math.ceil(trainingSize * numberOfEntries));
     }
 
@@ -68,21 +66,18 @@ public class PercentageSplit extends AbstractInputReader {
         currentEntryValidation = numberOfEntries - (int) Math.floor(validationSize * numberOfEntries);
     }
 
-    @Override
-    public AbstractInputReader clone() {
-        return new PercentageSplit(this.data);
-    }
+
 
     @Override
     public double getTrainingSize() {
         return Math.ceil(numberOfEntries * trainingSize);
     }
 
-    public static int getCurrentEntryTraining() {
+    public  int getCurrentEntryTraining() {
         return currentEntryTraining;
     }
 
-    public static int getCurrentEntryValidation() {
+    public  int getCurrentEntryValidation() {
         return currentEntryValidation;
     }
 }

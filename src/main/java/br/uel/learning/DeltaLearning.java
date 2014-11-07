@@ -44,27 +44,29 @@ public class DeltaLearning extends Learning {
         double sum;
 
         double[] matrixLine;
-
         while (dataReader.nextTraining()) {
             Entry entry = dataReader.getInputTraining();
             matrixLine = entry.getData();
-            sum = 0;
+            sum = 0.0;
 
-            for (int j = 0; j < (dataReader.getNumberOfColumns() - 1); j++) {
+            for (int j = 0; j < (dataReader.getNumberOfColumns()); j++) {
                 sum += weights[j] * matrixLine[j];
             }
 
+
             mle += Math.pow((classes[entry.getPosition()] - sum), 2.0);
 
-        }
 
+
+        }
+        logger.info("mle= " + mle);
         return mle / dataReader.getTrainingSize();
     }
 
     @Override
     public double[] learn(AbstractInputReader dataReader, double[] weights, double[] classes) {
         readProperties();
-        int numEpochs = 0, errorCount;
+        int numEpochs = 0;
         double error = 10e12;
         double curError = 0;
         double sum;                // somatório (entrada * peso)
@@ -79,46 +81,38 @@ public class DeltaLearning extends Learning {
             int i = 0;
             
             while (dataReader.nextTraining()) {
-                System.out.println("INPUT");
                 matrixLine = dataReader.getInputTraining().getData();
                 sum = 0;
 
-                for (int j = 0; j < (dataReader.getNumberOfColumns() - 1); j++) {
-                    sum += weights[j] * matrixLine[j];
-                }
 
                 logger.info("");
                 logger.info("*** Epóca " + numEpochs + " Amostra " + (i + 1) + " ***");
-                logger.info("Soma: " + sum);
-//                sum += threshold;
+
+                for (int j = 0; j < (dataReader.getNumberOfColumns()); j++) {
+                    logger.info("Soma = " + sum + " + (" + weights[j] + " * " + matrixLine[j] + ")");
+                    sum += weights[j] * matrixLine[j];
+                    logger.info("     = " + sum);
+                }
 
                 logger.info("saída encontrada: " + sum + ". valor desejado: " + classes[i]);
 
                 // atualização dos pesos
                 for (int j = 0; j < weights.length; j++) {
+
+                    logger.info("Peso[" + j + "] = " + weights[j] + " + (" + learningRate + " * (" + classes[i] + " - " + sum + ") * " + matrixLine[j] + ")");
                     weights[j] += (learningRate * (classes[i] - sum) * matrixLine[j]);
                     // Atualização de limiar
                     //                       threshold += (learningRate * (classes[i] - y) * matrixLine[j]);
-                    logger.info(" = " + weights[j]);
+                    logger.info("= " + weights[j]);
                 }
                 i++;
 
-
-//                AbstractInputReader aureadaer = dataReader.clone();
-                PercentageSplit aureadaer = new PercentageSplit();
-                aureadaer.setData(dataReader.getData());
-                curError = meanLeastSquareError(aureadaer, weights, classes);
-                aureadaer = null;
-                System.out.println("Nextrain: "+dataReader.nextTraining());
-
-                System.out.println("CURERROR:" + curError);
-                System.out.println("ERROR:  " + error);
+                AbstractInputReader reader = new PercentageSplit(dataReader.getData());
+                curError = meanLeastSquareError(reader, weights, classes);
+                plot.addValue(numEpochs*i, curError);
+                System.out.println(curError);
+                reader = null;
             } // while hasInputs
-
-            System.out.println("Add value");
-            plot.addValue(numEpochs, curError);
-
-            System.out.println("DIFFERROR: " + Math.abs(curError - error));
 
             logger.info("ERROR: " + error + "    CURERROR:  " + curError + "  DELTA: " + Math.abs(error - curError));
         }

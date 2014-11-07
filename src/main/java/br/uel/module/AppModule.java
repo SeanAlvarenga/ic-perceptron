@@ -22,9 +22,9 @@ public class AppModule extends AbstractModule {
         BinaryStep function = new BinaryStep();
 //        Sigmoid function = new Sigmoid();
         PercentageSplit validation = new PercentageSplit();
-        HebbianLearning learning = new HebbianLearning(function);
-
-//        DeltaLearning learning = new DeltaLearning(function);
+//        HebbianLearning learning = new HebbianLearning(function);
+//
+        DeltaLearning learning = new DeltaLearning(function);
 
         return  new Perceptron(validation, learning, function);
     }
