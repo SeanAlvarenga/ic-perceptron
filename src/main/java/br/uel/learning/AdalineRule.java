@@ -2,8 +2,8 @@ package br.uel.learning;
 
 import br.uel.functions.ActivationFunction;
 import br.uel.validation.AbstractInputReader;
+import br.uel.validation.CrossValidationReader;
 import br.uel.validation.Entry;
-import br.uel.validation.PercentageSplit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +106,7 @@ public class AdalineRule extends Learning {
                 i++;
             } // while hasInputs
 
-            AbstractInputReader reader = new PercentageSplit(dataReader.getData());
+            AbstractInputReader reader = new CrossValidationReader(dataReader.getData());
             curError = meanLeastSquareError(reader, weights, classes);
             if (curError != Double.POSITIVE_INFINITY) plot.addValue(numEpochs * i, curError);
             reader = null;

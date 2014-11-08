@@ -11,13 +11,16 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
 
+import br.uel.evaluation.AdalineEvaluation;
+import br.uel.evaluation.HebbianEvaluation;
+import br.uel.learning.AdalineRule;
+import br.uel.learning.HebbianLearning;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.uel.functions.ActivationFunction;
 import br.uel.learning.Learning;
 import br.uel.validation.AbstractInputReader;
-import br.uel.validation.Entry;
 
 public class Perceptron {
 
@@ -100,33 +103,13 @@ public class Perceptron {
     }
 
     public double evaluation() {
-
-        double sum = 0;
-        int correct = 0, wrong = 0;
-        
-        while (inputReader.nextValidation()) {
-            Entry entry = inputReader.getInputValidation();
-            
-            for (int i = 0; i < entry.getData().length; i++) {
-                sum += weight[i] * entry.getData()[i];
-            }
-
-//            double result = activation.function(sum);
-            
-//            if (result == classes[entry.getPosition()]) {
-            if (Math.abs(sum - classes[entry.getPosition()]) < 0.1) {
-                correct++;
-            } else {
-                wrong++;
-            }
-            
-            logger.debug("VALIDATION - Expected class:  " + classes[entry.getPosition()] + ";\t Given value:  " + sum);
-            logger.debug("WEIGHTS:   " + Arrays.toString(this.weight));
+        if (learningMethod instanceof AdalineRule) {
+            return new AdalineEvaluation(inputReader, weight, classes).avaliate();
+        } else if (learningMethod instanceof HebbianLearning) {
+            return new HebbianEvaluation(inputReader, weight, classes).avaliate();
+        } else {
+            return -1.0;
         }
-
-        return (double) correct / (double) (correct + wrong);
-
-
     }
 
     private void randomWeightInit() {

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PercentageSplit extends AbstractInputReader {
+public class CrossValidationReader extends AbstractInputReader {
 
     private double validationSize;
     private double trainingSize;
@@ -14,16 +14,16 @@ public class PercentageSplit extends AbstractInputReader {
     public int currentEntryValidation;
 
 
-    public PercentageSplit() {
+    public CrossValidationReader() {
         this(new double[0][0]);
     }
 
-    public PercentageSplit(double[][] data) {
+    public CrossValidationReader(double[][] data) {
         super(data);
 
 
         Properties properties = new Properties();
-        try (InputStream stream = this.getClass().getResourceAsStream("/validation.properties")){
+        try (InputStream stream = this.getClass().getResourceAsStream("/evaluation.properties")){
             properties.load(stream);
             this.validationSize = Double.parseDouble(properties.getProperty("validation_size"));
             this.trainingSize = Double.parseDouble(properties.getProperty("training_size"));
@@ -74,11 +74,9 @@ public class PercentageSplit extends AbstractInputReader {
         return Math.ceil(numberOfEntries * trainingSize);
     }
 
-    public  int getCurrentEntryTraining() {
-        return currentEntryTraining;
+    @Override
+    public double getValidationSize() {
+        return Math.floor(numberOfEntries * validationSize);
     }
 
-    public  int getCurrentEntryValidation() {
-        return currentEntryValidation;
-    }
 }

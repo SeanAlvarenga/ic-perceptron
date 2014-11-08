@@ -4,14 +4,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import br.uel.validation.CrossValidationReader;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.uel.validation.PercentageSplit;
-
 public class SubSamplingTest {
 
-    private PercentageSplit method;
+    private CrossValidationReader method;
 
     @Before
     public void setUp() throws Exception {
@@ -24,7 +23,7 @@ public class SubSamplingTest {
                 {1.0, 2.0, 3.0, 1.0},
                 {1.0, 2.0, 3.0, 1.0}
         };
-        method = new PercentageSplit(data);
+        method = new CrossValidationReader(data);
     }
 
     @Test

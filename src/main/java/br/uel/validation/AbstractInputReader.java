@@ -34,4 +34,5 @@ public abstract class AbstractInputReader {
     public abstract Entry getInputValidation();
     public abstract void reset();
     public abstract double getTrainingSize();
+    public abstract double getValidationSize();
 }
