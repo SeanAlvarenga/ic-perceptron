@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public abstract class ActivationFunction {
+
+    public ActivationFunction() {
+        readProperties();
+    }
 	
 	protected double lowerBound;
 	protected double upperBound;

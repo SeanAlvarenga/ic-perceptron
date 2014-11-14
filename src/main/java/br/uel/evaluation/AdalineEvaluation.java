@@ -1,5 +1,6 @@
 package br.uel.evaluation;
 
+import br.uel.functions.BinaryStep;
 import br.uel.validation.AbstractInputReader;
 import br.uel.validation.Entry;
 import org.slf4j.Logger;
@@ -10,9 +11,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 
-/**
- * Created by pedro on 08/11/14.
- */
 public class AdalineEvaluation extends Evaluation {
 
     private final Logger logger = LoggerFactory.getLogger(Evaluation.class);
@@ -51,7 +49,9 @@ public class AdalineEvaluation extends Evaluation {
                 sum += weights[i] * entry.getData()[i];
             }
 
-            if (Math.abs(sum - classes[entry.getPosition()]) < errorThreshold) {
+            BinaryStep function = new BinaryStep();
+
+            if (function.function(sum) == classes[entry.getPosition()]) {
                 correct++;
             }
 
@@ -59,6 +59,9 @@ public class AdalineEvaluation extends Evaluation {
             logger.debug("-----$$ VALIDATION diff: " + Math.abs(classes[entry.getPosition()]-sum) + "  " + errorThreshold);
 
         }
+
+        logger.debug("correct/size = " + correct + " / " + inputReader.getValidationSize());
+        System.out.println("correct/size = " + correct + " / " + inputReader.getValidationSize());
 
         return (double) correct / inputReader.getValidationSize();
     }

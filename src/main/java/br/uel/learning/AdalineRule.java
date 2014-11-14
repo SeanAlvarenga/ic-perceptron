@@ -108,7 +108,7 @@ public class AdalineRule extends Learning {
 
             AbstractInputReader reader = new CrossValidationReader(dataReader.getData());
             curError = meanLeastSquareError(reader, weights, classes);
-            if (curError != Double.POSITIVE_INFINITY) plot.addValue(numEpochs * i, curError);
+            plot.addValue(numEpochs, curError);
             reader = null;
 
         }

@@ -48,7 +48,9 @@ public class HebbianEvaluation extends Evaluation {
             logger.debug("WEIGHTS:   " + Arrays.toString(this.weights));
         }
 
-        return (double) correct / inputReader.getValidationSize();
+        logger.debug("PRECISION:  " + 100.0*(double) correct / inputReader.getValidationSize());
+
+        return 100.0*(double) correct / inputReader.getValidationSize();
 
     }
 }

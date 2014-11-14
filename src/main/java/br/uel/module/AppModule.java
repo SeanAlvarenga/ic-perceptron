@@ -1,8 +1,10 @@
 package br.uel.module;
 
 import br.uel.functions.ActivationFunction;
+import br.uel.functions.BinaryStep;
 import br.uel.functions.Sigmoid;
 import br.uel.learning.AdalineRule;
+import br.uel.learning.HebbianLearning;
 import br.uel.perceptron.Perceptron;
 import br.uel.validation.CrossValidationReader;
 
@@ -20,24 +22,23 @@ public class AppModule extends AbstractModule {
     @Provides
     public Perceptron providePerceptron() {
 //        BinaryStep function = new BinaryStep();
-        Sigmoid function = null;
+        ActivationFunction function = null;
         try {
-            function = (Sigmoid) getFunctionClass().newInstance();
+            function = (BinaryStep) getFunctionClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         CrossValidationReader validation = new CrossValidationReader();
-//        HebbianLearning learning = new HebbianLearning(function);
-//
-        AdalineRule learning = new AdalineRule(function);
+        HebbianLearning learning = new HebbianLearning(function);
 
-        return  new Perceptron(validation, learning, function);
+//        AdalineRule learning = new AdalineRule(function);
+
+        return new Perceptron(validation, learning, function);
     }
 
 
-
     public Class getFunctionClass() {
-        return Sigmoid.class;
+        return BinaryStep.class;
     }
 
 

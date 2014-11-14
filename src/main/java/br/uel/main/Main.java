@@ -7,12 +7,10 @@ import com.google.inject.Injector;
 
 public class Main {
 
-    private Perceptron perceptron;
-
     public Main() {
         Injector injector = Guice.createInjector(new AppModule());
-        perceptron = injector.getInstance(Perceptron.class);
-        perceptron.readInput("dataset_2014-10-30.csv");
+        Perceptron perceptron = injector.getInstance(Perceptron.class);
+        perceptron.readInput("lista_tabela.tsv");
         perceptron.learning();
         System.out.println("Rate: " + perceptron.evaluation());
         perceptron.createLineChart();
